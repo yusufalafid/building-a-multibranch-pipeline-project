@@ -1,42 +1,28 @@
-pipeline{
+pipeline {
     agent {
         docker {
-            image 'python:alpine'
-            args '-u root'
+            image 'node:6-alpine'
+            args '-p 3000:3000 -p 5000:5000' 
         }
     }
-    stages{
-        stage('prep'){
-            steps{
-                sh 'apk add git'
-            }
-        }
+    environment {
+        CI = 'true'
+    }
+    stages {
         stage('fetch'){
             steps{
-                sh 'git clone https://github.com/linuxacademy/content-pipelines-cje-labs.git'
+                sh 'git clone https://github.com/yusufalafid/building-a-multibranch-pipeline-project.git'
             }
         }
-        stage('install'){
-            steps{
-                sh 'pip install -r content-pipelines-cje-labs/lab3_lab4/dog_pics_downloader/requirements.txt'
+        stage('Build') {
+            steps {
+                sh 'sudo npm install'
             }
         }
-        stage('execute'){
-            steps{
-                sh 'python content-pipelines-cje-labs/lab3_lab4/dog_pics_downloader/dog_pic_get_class.py'
+        stage('Test') {
+            steps {
+                sh 'sudo ./jenkins/scripts/test.sh'
             }
-        }
-    }
-    post{
-        always{
-            echo "job execution complete"
-        }
-        success{
-            archiveArtifacts artifacts : '*.jpg'
-        }
-        cleanup{
-                echo "cleaning up"
-                sh 'rm -rf content-pipelines-cje-labs'
         }
     }
 }
