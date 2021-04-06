@@ -9,11 +9,6 @@ pipeline {
         CI = 'true'
     }
     stages {
-        stage('fetch'){
-            steps{
-                sh 'git clone https://github.com/yusufalafid/building-a-multibranch-pipeline-project.git'
-            }
-        }
         stage('Build') {
             steps {
                 sh 'sudo npm install'
